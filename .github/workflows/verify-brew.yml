@@ -24,4 +24,4 @@ jobs:
           brew install arxohq/tap/law
           brew test arxohq/tap/law
           law version --json
-          test "$(law version --json | python3 -c 'import json,sys; print(json.load(sys.stdin)["toolVersion"])')" = 0.2.8
+          test "$(law version --json | python3 -c 'import json,sys; print(json.load(sys.stdin)["tool"])')" = 0.2.8
