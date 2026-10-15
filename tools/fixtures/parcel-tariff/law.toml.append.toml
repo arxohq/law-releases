@@ -1,0 +1,5 @@
+
+[[tests]]
+family = "parcel_tariff"
+suites = ["tests/tariff.lawtest"]
+world = ["demo.parcel_tariff"]

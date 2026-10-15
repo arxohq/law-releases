@@ -1,0 +1,52 @@
+{
+  "sourceRepository": "arxo-io/law",
+  "sourceCommit": "77eaf5dd63990cee1b1496436d01311abb105981",
+  "scope": "Delivery helpers and synthetic quickstart inputs only; no engine implementation",
+  "files": [
+    {
+      "path": "tools/nix/prepare.py",
+      "source": "apps/delivery/nix/prepare.py",
+      "sha256": "9ae8512c420e12249669d9d1f51c8debf3a6aaf80562ca308a8a5192fd9ebf7c"
+    },
+    {
+      "path": "tools/nix/smoke.py",
+      "source": "apps/delivery/nix/smoke.py",
+      "sha256": "00d1d70f4b38ff5d911bf994f02d5a390264496cce9f5a91c7ede9016b511a27"
+    },
+    {
+      "path": "tools/nix/flake.nix",
+      "source": "apps/delivery/nix/flake.nix",
+      "sha256": "c2b4497d938ce67358a54c22b49edc1b1e82a9bb7e521373e4cab0cf802ce94e"
+    },
+    {
+      "path": "tools/nix/flake.lock",
+      "source": "apps/delivery/nix/flake.lock",
+      "sha256": "4808b0ca576d35af0ed709dd1ca56faeef3060c6df40a530912492cb2217943d"
+    },
+    {
+      "path": "tools/nix/package.nix",
+      "source": "apps/delivery/nix/package.nix",
+      "sha256": "736d0078d2f679830a14efb7060d37d08ca5ff93bc72967d3654432575a7446d"
+    },
+    {
+      "path": "tools/nix/README.md",
+      "source": "apps/delivery/nix/README.md",
+      "sha256": "9e5ee56bb9e67251e00d641a2b7ac856a04eaa34cc754ac5eef9678bfd61eb97"
+    },
+    {
+      "path": "tools/fixtures/parcel-tariff/source.law",
+      "source": "docs/site/cli/fixtures/parcel-tariff/source.law",
+      "sha256": "3f6529df477d354ad3572a541cbfa78c3a903f67e215e11af0b674e1d8a519f7"
+    },
+    {
+      "path": "tools/fixtures/parcel-tariff/tests/tariff.lawtest",
+      "source": "docs/site/cli/fixtures/parcel-tariff/tests/tariff.lawtest",
+      "sha256": "6e338783737d4554b8390addcf15808198fa2274a238e930733fa5d9e4e613e5"
+    },
+    {
+      "path": "tools/fixtures/parcel-tariff/law.toml.append.toml",
+      "source": "docs/site/cli/fixtures/parcel-tariff/law.toml.append.toml",
+      "sha256": "439ab67227e606f2176d544b6d0cbea91cbaacec9b5dbe4bdab3ac14b127e8a7"
+    }
+  ]
+}

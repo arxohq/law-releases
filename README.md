@@ -21,3 +21,11 @@ Each release `law-v<version>` carries `law-<version>-<target>.tar.gz` with a
 Targets: `aarch64-apple-darwin`, `x86_64-unknown-linux-gnu`.
 
 License: Apache-2.0 (see the files inside each archive).
+
+## Release archive checks
+
+The manual **Verify CLI release archives** workflow checks the exact public
+release assets with Nix on Linux x64 and macOS arm64. It verifies the archive
+hashes, CLI/LSP bytes and installed operation, then runs both quickstart paths
+outside the checkout. `tools/SOURCE.json` records the origin of the delivery
+helpers and synthetic inputs. These checks do not claim corpus acceptance.

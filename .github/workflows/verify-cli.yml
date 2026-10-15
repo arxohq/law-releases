@@ -1,0 +1,57 @@
+name: Verify CLI release archives
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing release candidate tag, e.g. law-v0.2.8'
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            system: x86_64-linux
+            target: x86_64-unknown-linux-gnu
+          - runner: macos-latest
+            system: aarch64-darwin
+            target: aarch64-apple-darwin
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Fetch and validate exact public release archives
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          set -eu
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir "$RUNNER_TEMP/assets" -p 'law-*.tar.gz' -p 'law-*.tar.gz.sha256'
+          python tools/nix/prepare.py --archives "$RUNNER_TEMP/assets" --version "${RELEASE_TAG#law-v}" --repository "$GITHUB_REPOSITORY" --out "$RUNNER_TEMP/arxo-nix"
+      - uses: cachix/install-nix-action@b85815f71a6de0ddee80b8a80a98d43f4bcc66c7
+      - name: Build Nix package from verified local bytes and smoke CLI plus LSP
+        env:
+          NIX_SYSTEM: ${{ matrix.system }}
+          RUST_TARGET: ${{ matrix.target }}
+        run: |
+          set -eu
+          archive=$(find "$RUNNER_TEMP/assets" -name "law-*-$RUST_TARGET.tar.gz")
+          export ARXO_NIX_FLAKE="path:$RUNNER_TEMP/arxo-nix"
+          export ARXO_NIX_ARCHIVE="$(nix --extra-experimental-features nix-command store add-file "$archive")"
+          nix build --impure --out-link "$RUNNER_TEMP/arxo-nix-result" --expr '
+            let f = builtins.getFlake (builtins.getEnv "ARXO_NIX_FLAKE");
+            in (builtins.getAttr (builtins.getEnv "NIX_SYSTEM") f.packages).law.override {
+              src = builtins.storePath (builtins.getEnv "ARXO_NIX_ARCHIVE");
+            }'
+          python tools/nix/smoke.py "$RUNNER_TEMP/arxo-nix-result/bin"
+      - name: Run both quickstarts with installed Nix binaries outside the checkout
+        run: python tools/quickstarts.py "$RUNNER_TEMP/arxo-nix-result/bin/law"

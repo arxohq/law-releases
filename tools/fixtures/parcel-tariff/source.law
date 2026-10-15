@@ -1,0 +1,26 @@
+language "law.core" version "0.2";
+package demo.parcel_tariff version "0.1.0";
+namespace "urn:law:demo:parcel_tariff";
+
+pub entity Shipment { label en unofficial "Shipment"; }
+
+pub relation weight_kg(s: Shipment, kg: Decimal) kind empirical {
+    label en unofficial "weight of the shipment, kg";
+}
+pub relation fee(s: Shipment, amount: Decimal) kind institutional {
+    label en unofficial "postage under the tariff";
+}
+
+rule BaseFee(s: Shipment, kg: Decimal) strict {
+    label en official "up to and including 2 kg: base fee 500";
+    when weight_kg(s, kg);
+    when kg <= 2.0;
+    then fee(s, 500.0);
+}
+
+rule HeavyFee(s: Shipment, kg: Decimal) strict {
+    label en official "over 2 kg: 500 plus 150 for each kilogram above 2";
+    when weight_kg(s, kg);
+    when kg > 2.0;
+    then fee(s, 500.0 + (kg - 2.0) * 150.0);
+}
