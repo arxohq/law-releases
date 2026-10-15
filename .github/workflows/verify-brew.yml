@@ -1,0 +1,27 @@
+name: Verify Homebrew law delivery
+on:
+  workflow_dispatch:
+    inputs:
+      tap_commit:
+        description: Exact reviewed homebrew-tap commit
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  brew:
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - name: Install public tap in an ephemeral runner
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: '1'
+          EXPECTED_TAP_COMMIT: ${{ inputs.tap_commit }}
+        run: |
+          set -eu
+          brew tap arxohq/tap
+          test "$(git -C "$(brew --repo arxohq/tap)" rev-parse HEAD)" = "$EXPECTED_TAP_COMMIT"
+          brew install arxohq/tap/law
+          brew test arxohq/tap/law
+          law version --json
+          test "$(law version --json | python3 -c 'import json,sys; print(json.load(sys.stdin)["toolVersion"])')" = 0.2.8
